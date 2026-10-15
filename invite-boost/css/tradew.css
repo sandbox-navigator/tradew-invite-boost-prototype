@@ -566,6 +566,12 @@ button:disabled {
   transform: translateY(0);
 }
 
+.device.entry-locked .nav,
+.device.entry-locked .screen,
+.device.entry-locked .dock {
+  pointer-events: none;
+}
+
 /* quick entries */
 .quick {
   margin-top: 18px;
@@ -686,6 +692,14 @@ button:disabled {
   font-size: 14px;
   font-weight: 700;
   line-height: 1.45;
+}
+
+.task-list-note {
+  padding: 10px 0 4px 62px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
 }
 
 .task-list-card .task-info-btn {

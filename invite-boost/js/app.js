@@ -3,6 +3,7 @@ const TASK = Object.fromEntries(C.tasks.map((t) => [t.id, t]));
 const visibleTasks = () => C.tasks.filter((task) => task.public !== false && task.enabled !== false);
 const DAY = 86400000;
 const HOUR = 3600000;
+const TOAST_DURATION = 1800;
 
 const clockBase = new Date(2026, 8, 28, 14, 0, 0).getTime();
 const loadedAt = Date.now();
@@ -22,6 +23,7 @@ const openingGiftAmount = (C.rewardCap * C.specialBonusPct) / 100;
 const themeName = document.documentElement.dataset.theme || "";
 const isV3 = themeName === "v3";
 const isAttempt = themeName === "attempt";
+let usesDeferredEntry = themeName === "tradew";
 const ink = themeName === "tradew" || themeName === "v3"
   ? { stroke: "#000000", muted: "#93959C", soft: "#C6C8CB", gold: "#12C65B", goldDeep: "#009B74", ribbon: "#064843", ink: "#000000", line: "#EFEFF0", line2: "#E2E2E2", empty: "#93959C", emptyFill: "#F6F6F7" }
   : { stroke: "#eaecef", muted: "#848e9c", soft: "#c6ccd4", gold: "#fcd535", goldDeep: "#f0b90b", ribbon: "#b8860b", ink: "#0b0e11", line: "#2b3139", line2: "#3a3f47", empty: "#5e6673", emptyFill: "#1e2329" };
@@ -44,7 +46,7 @@ const copy = {
   zh: {
     title: "邀请助力",
     tasksTitle: "邀请任务",
-    tasksSub: `邀请好友，每 ${C.cycleDays} 天最高可解锁 ${C.rewardCap} ${cur}。`,
+    tasksSub: `邀请好友，每 ${C.cycleDays} 天可解锁 ${C.rewardCap} ${cur}。`,
     rewardTitle: "可获得的奖励",
     rulesLink: "活动规则",
     shareTitle: "分享",
@@ -52,7 +54,7 @@ const copy = {
     inviteShort: "邀请",
     rulesTitle: "规则",
     kickerEarned: "您已累积",
-    kickerMax: "每轮最高可得",
+    kickerMax: "每轮可得",
     kickerFull: "已集满",
     kickerPaid: "本周期奖励已提现",
     gap: (n) => `还差 <b>${n} ${cur}</b> 即可`,
@@ -60,7 +62,7 @@ const copy = {
     idleGap: "开启后即可参与本轮活动",
     roundLeft: (t) => `本轮剩余 <b>${t}</b>`,
     roundLen: `每轮持续 ${C.roundDays} 天，未集满则本轮失效`,
-    roundDone: "本轮已完成，完成 KYC 即可提现",
+    roundDone: "",
     roundEnded: (d) => `上一轮已于 <b>${d}</b> 结束`,
     nextIn: (t) => `距离下一轮开启还有 <b>${t}</b>`,
     dhms: (d, h, m, s) => `${pad(d)}天 ${pad(h)}小时 ${pad(m)}分钟 ${pad(s)}秒`,
@@ -77,7 +79,7 @@ const copy = {
     noteBlocked: "受限国家/地区用户，以及高级代理（用户代理、商务代理、IB 明星代理）不可参与本活动。",
     kycNeed: "完成 KYC 认证后即可提现",
     kycOk: "已通过 KYC，可立即提现",
-    quick: ["受邀用户", "奖励", "规则"],
+    quick: ["我的邀请", "奖励", "规则"],
     taskN: (i) => `任务 ${i}：`,
     tag: "",
     tagDual: "",
@@ -86,7 +88,7 @@ const copy = {
     todo: "进行中",
     tasks: {
       deposit: {
-        title: () => `邀请新好友在平台完成入金`,
+        title: () => `邀请新好友注册并完成入金`,
         list: () => [
           `邀请好友在平台完成入金，将按活动配置的比例解锁 ${C.rewardCap} ${cur}。`,
         ],
@@ -115,21 +117,21 @@ const copy = {
         unit: "手",
       },
     },
-    rewardHead: `最高 ${C.rewardCap} ${cur} 等您赢！`,
+    rewardHead: `${C.rewardCap} ${cur} 等您赢！`,
     rewardTag: `每 ${C.cycleDays} 天`,
     rewardList: [
-      `每 ${C.cycleDays} 天可完成 ${C.roundsPerCycle} 轮，最高可得 ${C.rewardCap} ${cur}，每轮持续 ${C.roundDays} 天。`,
+      `每 ${C.cycleDays} 天可完成 ${C.roundsPerCycle} 轮，可获得 ${C.rewardCap} ${cur}，每轮持续 ${C.roundDays} 天。`,
       "奖励只在本轮累计集满后发放，领取前需完成 KYC 身份认证。",
       "未在本轮内集满的奖励将过期失效。",
     ],
     rewardInfoTitle: "奖励说明",
     rewardInfo: `<ol class="info-steps">
       <li><span>1</span><p>每完成 1 个任务，进度将按比例解锁。</p></li>
-      <li><span>2</span><p>每 ${C.cycleDays} 天最多可完成 ${C.roundsPerCycle} 轮，最高可获得 ${C.rewardCap} ${cur}。</p></li>
+      <li><span>2</span><p>每 ${C.cycleDays} 天最多可完成 ${C.roundsPerCycle} 轮，可获得 ${C.rewardCap} ${cur}。</p></li>
       <li><span>3</span><p>每轮持续 ${C.roundDays} 天，若未能解锁某一轮的全部奖励，该未完成的轮次将过期失效。</p></li>
       <li><span>4</span><p>失效后，可开启新一轮并再次尝试。</p></li>
     </ol>`,
-    tabs: ["累积明细", "我的邀请", "我的奖励"],
+    tabs: ["我的邀请", "我的奖励"],
     ledgerTotal: "本轮累计",
     ledgerGift: "TradeW 新用户赠送",
     ledgerDeposit: (name) => `好友 ${name} 完成入金任务`,
@@ -166,7 +168,7 @@ const copy = {
     boosted: "已助力",
     inviteId: "邀请码",
     inviteLink: "邀请链接",
-    posterTitle: `加入我！一起赚取奖励，最高达 ${C.rewardCap} ${cur}！`,
+    posterTitle: `加入我！一起赚取 ${C.rewardCap} ${cur} 奖励！`,
     posterSub: "立即注册，完成任务，赚取奖励。",
     channels: [
       { id: "fb", name: "Facebook", mark: "f" },
@@ -241,7 +243,7 @@ const copy = {
         <p>第 3 步：当您的受邀好友完成任务后，您的奖励将不断累积。</p>
         <p>第 4 步：继续邀请好友，积攒 ${cur} 并解锁提现权限。</p>
         <h4>2. 轮次与奖励</h4>
-        <p>用户每 ${C.cycleDays} 天最多可完成 ${C.roundsPerCycle} 轮，最高可获得 ${C.rewardCap} ${cur}。每轮持续 ${C.roundDays} 天。若用户未能解锁某一轮的全部奖励，该未完成的轮次将过期失效，不会发放任何奖励。随后，用户可开启新一轮并再次尝试。</p>
+        <p>用户每 ${C.cycleDays} 天最多可完成 ${C.roundsPerCycle} 轮，可获得 ${C.rewardCap} ${cur}。每轮持续 ${C.roundDays} 天。若用户未能解锁某一轮的全部奖励，该未完成的轮次将过期失效，不会发放任何奖励。随后，用户可开启新一轮并再次尝试。</p>
         <p class="num"><b>3.</b> ${C.cycleDays} 天内完成 ${C.roundsPerCycle} 轮后需等待下一周期开启新任务。</p>
         <p class="num"><b>4.</b> 各位受邀好友在同一轮次内完成所有必做任务后，方可为您的进度助力。</p>
         <p class="num"><b>5.</b> 美分、Pro 账户交易量不计入有效交易量统计，好友持仓时间不得低于 1 分钟。</p>
@@ -255,7 +257,7 @@ const copy = {
   en: {
     title: "Invite Boost",
     tasksTitle: "Referrer Tasks",
-    tasksSub: `Invite friends to unlock up to ${C.rewardCap} ${cur} every ${C.cycleDays} days.`,
+    tasksSub: `Invite friends to unlock ${C.rewardCap} ${cur} every ${C.cycleDays} days.`,
     rewardTitle: "Rewards",
     rulesLink: "Campaign rules",
     shareTitle: "Share",
@@ -263,7 +265,7 @@ const copy = {
     inviteShort: "Invite",
     rulesTitle: "Rules",
     kickerEarned: "You've accumulated",
-    kickerMax: "Earn up to per round",
+    kickerMax: "Earn per round",
     kickerFull: "Round complete",
     kickerPaid: "This cycle's reward is paid",
     gap: (n) => `<b>${n} ${cur}</b> more to`,
@@ -271,7 +273,7 @@ const copy = {
     idleGap: "Start to join this round",
     roundLeft: (t) => `Round ends in <b>${t}</b>`,
     roundLen: `Each round lasts ${C.roundDays} days. Unfinished rounds expire.`,
-    roundDone: "Round complete. Pass KYC to withdraw.",
+    roundDone: "",
     roundEnded: (d) => `Last round ended <b>${d}</b>`,
     nextIn: (t) => `Next round opens in <b>${t}</b>`,
     dhms: (d, h, m, s) => `${d}d ${pad(h)}h ${pad(m)}m ${pad(s)}s`,
@@ -288,7 +290,7 @@ const copy = {
     noteBlocked: "Users in restricted regions and senior agents (user agents, business agents, IB star agents) can't join.",
     kycNeed: "Pass KYC to withdraw",
     kycOk: "KYC passed. Ready to withdraw.",
-    quick: ["Invitees", "Rewards", "Rules"],
+    quick: ["My Invites", "Rewards", "Rules"],
     taskN: (i) => `Task ${i}: `,
     tag: "",
     tagDual: "",
@@ -297,7 +299,7 @@ const copy = {
     todo: "In progress",
     tasks: {
       deposit: {
-        title: () => "Invite new friends to make a deposit",
+        title: () => "Invite new friends to register and deposit",
         list: () => [
           `Invite friends to deposit and unlock the ${C.rewardCap} ${cur} reward proportionally under the campaign configuration.`,
         ],
@@ -326,21 +328,21 @@ const copy = {
         unit: "lots",
       },
     },
-    rewardHead: `Win up to ${C.rewardCap} ${cur}!`,
+    rewardHead: `Win ${C.rewardCap} ${cur}!`,
     rewardTag: `Every ${C.cycleDays} days`,
     rewardList: [
-      `Complete ${C.roundsPerCycle} round every ${C.cycleDays} days for up to ${C.rewardCap} ${cur}. Each round lasts ${C.roundDays} days.`,
+      `Complete ${C.roundsPerCycle} round every ${C.cycleDays} days to receive ${C.rewardCap} ${cur}. Each round lasts ${C.roundDays} days.`,
       "Rewards are paid only when the round is full. KYC is required to claim.",
       "Rounds not completed in time expire.",
     ],
     rewardInfoTitle: "About rewards",
     rewardInfo: `<ol class="info-steps">
       <li><span>1</span><p>Each completed task unlocks progress proportionally.</p></li>
-      <li><span>2</span><p>You can complete up to ${C.roundsPerCycle} round every ${C.cycleDays} days and receive up to ${C.rewardCap} ${cur}.</p></li>
+      <li><span>2</span><p>You can complete up to ${C.roundsPerCycle} round every ${C.cycleDays} days and receive ${C.rewardCap} ${cur}.</p></li>
       <li><span>3</span><p>Each round lasts ${C.roundDays} days. If the full reward is not unlocked, the unfinished round expires.</p></li>
       <li><span>4</span><p>After expiry, you can start a new round and try again.</p></li>
     </ol>`,
-    tabs: ["Accumulation Details", "My Invites", "My Rewards"],
+    tabs: ["My Invites", "My Rewards"],
     ledgerTotal: "Round total",
     ledgerGift: "TradeW new-user gift",
     ledgerDeposit: (name) => `Friend ${name} completed the deposit task`,
@@ -377,7 +379,7 @@ const copy = {
     boosted: "Boosts",
     inviteId: "Referral code",
     inviteLink: "Referral link",
-    posterTitle: `Join me and earn up to ${C.rewardCap} ${cur} in rewards!`,
+    posterTitle: `Join me and earn ${C.rewardCap} ${cur} in rewards!`,
     posterSub: "Sign up, finish tasks, earn rewards.",
     channels: [
       { id: "fb", name: "Facebook", mark: "f" },
@@ -452,7 +454,7 @@ const copy = {
         <p>Step 3: Your reward grows as invited friends finish tasks.</p>
         <p>Step 4: Keep inviting to collect ${cur} and unlock withdrawal.</p>
         <h4>2. Rounds and rewards</h4>
-        <p>You can complete up to ${C.roundsPerCycle} round every ${C.cycleDays} days for up to ${C.rewardCap} ${cur}. Each round lasts ${C.roundDays} days. If you don't unlock the full reward, the round expires and nothing is paid. You can then start a new round.</p>
+        <p>You can complete up to ${C.roundsPerCycle} round every ${C.cycleDays} days to receive ${C.rewardCap} ${cur}. Each round lasts ${C.roundDays} days. If you don't unlock the full reward, the round expires and nothing is paid. You can then start a new round.</p>
         <p class="num"><b>3.</b> After completing ${C.roundsPerCycle} round in ${C.cycleDays} days, wait for the next cycle to start again.</p>
         <p class="num"><b>4.</b> An invited friend can boost your progress only after finishing every required task in the same round.</p>
         <p class="num"><b>5.</b> Cent and Pro account volume isn't counted. Friends must hold a position for at least 1 minute.</p>
@@ -483,6 +485,13 @@ const state = {
   dailyReturnSeen: false,
   comebackAction: null,
   v3Open: null,
+  amountRevealed: true,
+  entryTimer: null,
+  entryPromptOpen: false,
+  revealAfterShare: false,
+  pendingRevealToast: "",
+  suppressDeferredClose: false,
+  amountAnimation: null,
 };
 
 const t = () => copy[state.lang];
@@ -683,6 +692,11 @@ const scenes = {
 };
 
 function applyScene(id) {
+  clearTimeout(state.entryTimer);
+  cancelAnimationFrame(state.amountAnimation);
+  state.suppressDeferredClose = true;
+  closeAll();
+  state.suppressDeferredClose = false;
   Object.assign(state, {
     scene: id,
     round: null,
@@ -694,11 +708,15 @@ function applyScene(id) {
     cycleStart: null,
     nextId: 1,
     v3Open: null,
+    amountRevealed: !usesDeferredEntry,
+    entryPromptOpen: false,
+    revealAfterShare: false,
+    pendingRevealToast: "",
   });
   scenes[id]();
   document.querySelectorAll("[data-scene]").forEach((b) => b.classList.toggle("is-on", b.dataset.scene === id));
-  closeAll();
   render();
+  if (usesDeferredEntry) beginEntryFlow();
 }
 
 function mainAction() {
@@ -710,7 +728,7 @@ function mainAction() {
   return { label: t().invite, fn: () => open("share") };
 }
 
-function startRound() {
+function startRound(options = {}) {
   hideComeback();
   Object.assign(state, { scene: "active", friends: [], events: [], nextId: 1, hasParticipated: true });
   const start = nowMs();
@@ -723,6 +741,7 @@ function startRound() {
   render();
   bump();
   if (!state.coachSeen) showCoach();
+  else if (options.deferToast) state.pendingRevealToast = t().started(fmtPct(C.specialBonusPct));
   else toast(t().started(fmtPct(C.specialBonusPct)));
 }
 
@@ -795,6 +814,81 @@ function syncComeback() {
   const el = $("comeback");
   el.hidden = false;
   el.classList.add("on");
+}
+
+function currentDisplayAmount() {
+  if (state.scene === "idle" || state.scene === "blocked") return C.rewardCap;
+  if (state.scene === "cooldown") return C.rewardCap;
+  return (progress().total / 100) * C.rewardCap;
+}
+
+function revealAmount() {
+  if (!usesDeferredEntry || state.amountRevealed) return;
+  state.amountRevealed = true;
+  $("device").classList.remove("entry-locked");
+  const target = currentDisplayAmount();
+  render();
+  clearTimeout(tickerTimer);
+  if (state.pendingRevealToast) {
+    toast(state.pendingRevealToast);
+    state.pendingRevealToast = "";
+    scheduleTicker(TOAST_DURATION + 5000);
+  } else {
+    runTicker();
+  }
+  const amount = $("hero-amount");
+  if (!amount) return;
+  const started = performance.now();
+  const duration = 900;
+  const draw = (now) => {
+    const ratio = Math.max(0, Math.min(1, (now - started) / duration));
+    const eased = 1 - Math.pow(1 - ratio, 3);
+    amount.innerHTML = `${fmtAmt(target * eased)}<small>${cur}</small>`;
+    if (ratio < 1) state.amountAnimation = requestAnimationFrame(draw);
+  };
+  state.amountAnimation = requestAnimationFrame(draw);
+}
+
+function beginEntryFlow() {
+  const L = t();
+  $("device").classList.add("entry-locked");
+  state.entryTimer = setTimeout(() => {
+    $("device").classList.remove("entry-locked");
+    const s = state.scene;
+    if (s === "idle" || s === "expired") {
+      const gift = openingGiftAmount;
+      const gap = C.rewardCap - gift;
+      state.entryPromptOpen = true;
+      dialog(
+        `${state.lang === "zh" ? "TradeW 送你" : "TradeW gives you"} ${fmtAmt(gift)} ${cur}`,
+        state.lang === "zh"
+          ? `距离提现仅差 ${fmtAmt(gap)} ${cur}`
+          : `Only ${fmtAmt(gap)} ${cur} left to withdraw`,
+        [{
+          label: L.invite,
+          fn: () => {
+            state.coachSeen = true;
+            startRound({ deferToast: true });
+            state.revealAfterShare = true;
+            open("share");
+          },
+        }]
+      );
+      return;
+    }
+    if (s === "active" || s === "near") {
+      state.entryPromptOpen = true;
+      dialog(L.shortTitle(fmtAmt(roundGap())), L.shortHint, [{
+        label: L.invite,
+        fn: () => {
+          state.revealAfterShare = true;
+          open("share");
+        },
+      }], { html: true });
+      return;
+    }
+    revealAmount();
+  }, 1000);
 }
 
 function hideCoach(markSeen) {
@@ -1038,7 +1132,7 @@ function renderHeroV3() {
     });
   }
   const facesBtn = $("face-row");
-  if (facesBtn) facesBtn.addEventListener("click", () => openMy(1));
+  if (facesBtn) facesBtn.addEventListener("click", () => openMy(0));
   syncV3Action();
 }
 
@@ -1070,7 +1164,6 @@ function renderHero() {
     if (s === "expired") badge = `<span class="hero-badge">${L.badgeExpired}</span>`;
   } else if (s === "done") {
     kicker = L.kickerFull;
-    gap = `<p class="hero-gap">${state.kyc ? L.kycOk : L.kycNeed}</p>`;
     badge = `<span class="hero-badge ok">${L.badgeDone}</span>`;
   } else if (s === "cooldown") {
     kicker = L.kickerPaid;
@@ -1078,13 +1171,17 @@ function renderHero() {
     badge = `<span class="hero-badge ok">${L.badgePaid(C.rewardCap)}</span>`;
   }
 
+  if (usesDeferredEntry && !state.amountRevealed) {
+    kicker = L.kickerEarned;
+    amt = fmtAmt(0);
+    gap = "";
+    badge = "";
+  }
+
   hero.innerHTML = `
     <p class="hero-kicker">${kicker}</p>
-    <button type="button" class="hero-amount hero-detail" id="hero-detail" aria-label="${L.tabs[0]}" ${state.round ? "" : "disabled"}>${amt}<small>${cur}</small></button>
+    <p class="hero-amount" id="hero-amount">${amt}<small>${cur}</small></p>
     ${gap}${badge}`;
-
-  const heroDetail = $("hero-detail");
-  if (heroDetail && state.round) heroDetail.addEventListener("click", () => openMy(0));
 
   const gw = $("gap-withdraw");
   if (gw) {
@@ -1119,11 +1216,11 @@ function renderTime() {
     if (chip) chip.textContent = v3Clock();
     return;
   }
-  el.hidden = false;
+  el.hidden = s === "done";
   if (s === "active" || s === "near") {
     el.innerHTML = L.roundLeft(dhms(state.round.start + C.roundDays * DAY - now));
   } else if (s === "done") {
-    el.innerHTML = L.roundDone;
+    el.innerHTML = "";
   } else if (s === "expired") {
     el.innerHTML = L.roundEnded(fmtDate(state.round.start + C.roundDays * DAY));
   } else if (s === "cooldown") {
@@ -1144,8 +1241,8 @@ function renderQuick() {
   const L = t();
   const count = state.friends.length;
   const targets = [
+    () => openMy(0),
     () => openMy(1),
-    () => openMy(2),
     () => open("rules"),
   ];
   $("quick").innerHTML = L.quick
@@ -1250,6 +1347,7 @@ function renderTasks() {
   $("task-track").innerHTML = `
     <article class="task-list-card">
       ${rows}
+      <p class="task-list-note">${state.lang === "zh" ? `将按比例解锁 ${C.rewardCap} ${cur}。` : `Unlock ${C.rewardCap} ${cur} proportionally.`}</p>
     </article>`;
   $("task-dots").innerHTML = "";
 }
@@ -1313,15 +1411,7 @@ function renderReward() {
 
 function rotatorNotice() {
   const L = t();
-  return `<div class="notice-rotator-wrap">
-    <div class="notice rotator" data-rotator>
-      <div class="notice-viewport">
-        <span class="notice-line is-on">${L.syncNotice}</span>
-        <span class="notice-line">${L.rewardNotice}</span>
-      </div>
-    </div>
-    <div class="notice-dots" data-notice-dots><i class="on"></i><i></i></div>
-  </div>`;
+  return `<div class="notice-rotator-wrap"><div class="notice"><span class="notice-line is-on">${L.syncNotice}</span></div></div>`;
 }
 
 let noticeTimer;
@@ -1368,63 +1458,23 @@ function renderMy() {
     `<div class="empty">${emptyIco}${text}${withBtn ? `<br /><button type="button" class="cta" data-open="share">${L.invite}</button>` : ""}</div>`;
 
   if (state.tab === 0) {
-    if (!state.round) {
-      body.innerHTML = empty(L.noRound);
-      return;
-    }
-    const p = progress();
-    const nameOf = (id) => state.friends.find((f) => f.id === id)?.name || "—";
-    const dynamicEntries = p.records.map((r) => ({
-      type: r.task === "deposit" ? "deposit" : "trade",
-      friendId: r.friendId,
-      amount: (r.gain / 100) * C.rewardCap,
-      at: r.at,
-    }));
-    let balance = 0;
-    const ledger = [...(state.round.ledger || []), ...dynamicEntries]
-      .sort((a, b) => a.at - b.at)
-      .map((entry) => {
-        balance += entry.amount;
-        return { ...entry, balance };
-      });
-    const status = state.scene === "expired" ? L.ledgerExpired : L.ledgerEffective;
-    const titleOf = (entry) =>
-      entry.type === "gift"
-        ? L.ledgerGift
-        : entry.type === "deposit"
-          ? L.ledgerDeposit(nameOf(entry.friendId))
-          : L.ledgerTrade(nameOf(entry.friendId));
-    const recs = [...ledger].reverse().map(
-      (entry) => `
-        <div class="rec">
-          <div class="rec-row"><b>${titleOf(entry)}</b><b class="up">+${fmtAmt(entry.amount)} ${cur}</b></div>
-          <div class="rec-row"><span>${L.ledgerTime}</span><b>${fmtDate(entry.at)}</b></div>
-          <div class="rec-row"><span>${L.ledgerStatus}</span><b>${status}</b></div>
-          <div class="rec-row"><span>${L.ledgerBalance}</span><b>${fmtAmt(entry.balance)} ${cur}</b></div>
-        </div>`
-    );
-    body.innerHTML = `
+    const period = state.round
+      ? `
       <label class="period-select">
         <span>${L.periodSelect}</span>
         <select aria-label="${L.periodSelect}">
           <option>${fmtDate(state.round.start)} – ${fmtDate(state.round.start + C.roundDays * DAY)}</option>
           <option>2026-09-22 10:11 – 2026-09-29 10:11</option>
         </select>
-      </label>
-      <div class="stat-box"><span>${L.ledgerTotal}</span><b>${fmtAmt((p.total / 100) * C.rewardCap)} / ${fmtAmt(C.rewardCap)} ${cur}</b></div>
-      ${rotatorNotice()}
-      ${recs.join("")}`;
-    startNoticeRotator();
-    return;
-  }
-
-  if (state.tab === 1) {
+      </label>`
+      : "";
     if (!state.friends.length) {
-      body.innerHTML = `${rotatorNotice()}${empty(L.noInvitees, true)}`;
+      body.innerHTML = `${period}${rotatorNotice()}${empty(L.noInvitees, true)}`;
       startNoticeRotator();
       return;
     }
     body.innerHTML =
+      period +
       rotatorNotice() +
       [...state.friends]
         .reverse()
@@ -1564,7 +1614,8 @@ function render() {
   renderReward();
   renderMy();
   renderShare();
-  syncComeback();
+  if (usesDeferredEntry) hideComeback();
+  else syncComeback();
   syncCoach();
   syncConfetti();
 }
@@ -1602,11 +1653,16 @@ const overlay = $("overlay");
 const sheets = { share: $("sheet-share"), my: $("sheet-my"), rules: $("sheet-rules") };
 
 function closeAll() {
+  const shareWasOpen = sheets.share.classList.contains("on");
   Object.values(sheets).forEach((s) => s.classList.remove("on"));
   $("poster").classList.remove("on");
   $("dialog").classList.remove("on");
   overlay.classList.remove("on");
   hideCoach(false);
+  if (usesDeferredEntry && shareWasOpen && state.revealAfterShare && !state.suppressDeferredClose) {
+    state.revealAfterShare = false;
+    revealAmount();
+  }
 }
 
 function open(name) {
@@ -1616,6 +1672,7 @@ function open(name) {
   }
   if (name === "share") hideCoach(true);
   closeAll();
+  $("ticker").classList.remove("is-down");
   sheets[name].classList.add("on");
   if (name === "share") {
     $("poster").classList.add("on");
@@ -1651,7 +1708,10 @@ function dialog(title, text, actions, opts = {}) {
     .join("");
   wrap.querySelectorAll("[data-act]").forEach((b) =>
     b.addEventListener("click", () => {
+      state.entryPromptOpen = false;
+      state.suppressDeferredClose = true;
       closeAll();
+      state.suppressDeferredClose = false;
       const fn = actions[Number(b.dataset.act)].fn;
       if (fn) fn();
     })
@@ -1666,7 +1726,7 @@ function toast(text) {
   el.textContent = text;
   el.classList.add("on");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove("on"), 1800);
+  toastTimer = setTimeout(() => el.classList.remove("on"), TOAST_DURATION);
 }
 
 // simulate friend activity
@@ -1719,7 +1779,10 @@ function renderTicker() {
 }
 
 function tickerBlocked() {
-  return $("comeback").classList.contains("on") || $("coach").classList.contains("on") || $("dialog").classList.contains("on");
+  return overlay.classList.contains("on") ||
+    $("comeback").classList.contains("on") ||
+    $("coach").classList.contains("on") ||
+    $("dialog").classList.contains("on");
 }
 
 function scheduleTicker(delay) {
@@ -1776,9 +1839,25 @@ document.addEventListener("click", (e) => {
   const toastBtn = e.target.closest("[data-toast]");
   if (toastBtn) toast(t()[toastBtn.dataset.toast]);
 });
-overlay.addEventListener("click", closeAll);
+overlay.addEventListener("click", () => {
+  if (!state.entryPromptOpen) closeAll();
+});
 
 document.querySelectorAll("[data-scene]").forEach((b) => b.addEventListener("click", () => applyScene(b.dataset.scene)));
+document.querySelectorAll("[data-toggle-entry-flow]").forEach((b) =>
+  b.addEventListener("click", () => {
+    usesDeferredEntry = !usesDeferredEntry;
+    b.classList.toggle("is-on", usesDeferredEntry);
+    b.textContent = usesDeferredEntry ? "非全屏弹窗" : "全屏弹窗";
+    Object.assign(state, {
+      hasParticipated: false,
+      welcomeSeen: false,
+      dailyReturnSeen: false,
+      coachSeen: false,
+    });
+    applyScene(state.scene);
+  })
+);
 document.querySelectorAll("[data-sim]").forEach((b) => b.addEventListener("click", () => simulate(b.dataset.sim)));
 document.querySelectorAll("[data-toggle-deposit]").forEach((b) =>
   b.addEventListener("click", () => {
