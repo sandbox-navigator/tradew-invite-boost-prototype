@@ -1938,6 +1938,7 @@ button:disabled {
 }
 
 .ticker {
+  top: 6px;
   left: 15px;
   right: 15px;
   height: 36px;
@@ -1961,8 +1962,8 @@ button:disabled {
 }
 
 .hero-card {
-  margin-top: 48px;
-  padding: 20px 16px 16px;
+  margin-top: 16px;
+  padding: 34px 16px 16px;
   border-radius: 15px;
   background: #fff;
   border: 1px solid var(--line);
