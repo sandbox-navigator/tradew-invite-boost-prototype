@@ -1,0 +1,23 @@
+.version-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.version-bar a {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #fff;
+  color: #222;
+  text-decoration: none;
+  font-size: 12px;
+  border: 1px solid #ddd;
+}
+
+.version-bar a.is-on {
+  background: #111;
+  color: #fcd535;
+  border-color: #111;
+}
