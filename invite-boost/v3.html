@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh" data-theme="v3">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>Invite Boost · Clear</title>
+  <link rel="stylesheet" href="css/v3.css?v=13" />
+  <link rel="stylesheet" href="css/versions.css?v=3" />
+</head>
+<body>
+  <div class="app-page">
+    <aside class="proto-bar" aria-label="Prototype controls">
+      <span>States</span>
+      <button type="button" data-scene="idle">未开启</button>
+      <button type="button" data-scene="active">进行中</button>
+      <button type="button" data-scene="near">快完成</button>
+      <button type="button" data-scene="done">已完成</button>
+      <button type="button" data-scene="expired" class="is-on">已过期</button>
+      <button type="button" data-scene="cooldown">冷却中</button>
+      <button type="button" data-scene="blocked">无资格</button>
+      <span>好友</span>
+      <button type="button" data-sim="deposit">+ 入金</button>
+      <button type="button" data-sim="lot">+ 1 手</button>
+      <button type="button" data-sim="crew">+ 多人满手</button>
+      <button type="button" data-sim="big">+ 5 手</button>
+      <span role="group" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="zh" class="is-on">中文</button>
+      </span>
+      <nav class="version-bar" aria-label="Versions">
+        <a href="index.html">币安</a>
+        <a href="tradew.html">TradeW</a>
+        <a href="v3.html" class="is-on">清晰版</a>
+        <a href="attempt.html">路径版</a>
+      </nav>
+    </aside>
+
+    <div class="device" id="device">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span class="icons" aria-hidden="true">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="#000"><rect x="0" y="7" width="3" height="5" rx="0.5"/><rect x="4.5" y="5" width="3" height="7" rx="0.5"/><rect x="9" y="2.5" width="3" height="9.5" rx="0.5"/><rect x="13.5" y="0" width="3" height="12" rx="0.5"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 4.5C3.8 2 6.9 1 8 1s4.2 1 7 3.5" stroke="#000" stroke-width="1.4" stroke-linecap="round"/><path d="M3.6 7C5.3 5.6 6.8 5 8 5s2.7.6 4.4 2" stroke="#000" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="10.2" r="1.3" fill="#000"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0.5" y="1" width="21" height="10" rx="2.2" stroke="#000" fill="none"/><rect x="2" y="2.5" width="17" height="7" rx="1.2" fill="#000"/><rect x="22.5" y="3.5" width="1.6" height="5" rx="0.6" fill="#000"/></svg>
+        </span>
+      </div>
+
+      <header class="nav">
+        <button type="button" class="icon-btn" data-toast="back" aria-label="Back">
+          <svg width="11" height="18" viewBox="0 0 12 20" fill="none"><path d="M10 2 2 10l8 8" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h1 class="nav-title" data-i18n="title">邀请助力</h1>
+        <div class="nav-right">
+          <button type="button" class="icon-btn" data-open="rules" aria-label="Rules">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9.5" stroke="#000" stroke-width="1.6"/><path d="M8.6 8.6a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6" stroke="#000" stroke-width="1.6" stroke-linecap="round"/><circle cx="11" cy="15.6" r="1" fill="#000"/></svg>
+          </button>
+          <button type="button" class="icon-btn" data-open="share" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="16.5" cy="5" r="2.6" stroke="#000" stroke-width="1.6"/><circle cx="5.5" cy="11" r="2.6" stroke="#000" stroke-width="1.6"/><circle cx="16.5" cy="17" r="2.6" stroke="#000" stroke-width="1.6"/><path d="m7.8 9.8 6.4-3.6M7.8 12.2l6.4 3.6" stroke="#000" stroke-width="1.6"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="confetti" id="confetti" hidden aria-hidden="true"></div>
+      <main class="screen" id="screen">
+        <div class="ticker" id="ticker" aria-live="polite">
+          <span class="ticker-bell" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1.8a4.2 4.2 0 0 0-4.2 4.2v2.6L2.5 11h11l-1.3-2.4V6A4.2 4.2 0 0 0 8 1.8Z" fill="#fff"/><path d="M6.3 12.6a1.8 1.8 0 0 0 3.4 0" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </span>
+          <p id="ticker-text"></p>
+        </div>
+
+        <section class="hero-card" id="hero"></section>
+        <p class="round-time" id="round-time"></p>
+
+        <button type="button" class="cta" id="cta-main"></button>
+        <p class="cta-note" id="cta-note" hidden></p>
+
+        <nav class="quick" id="quick"></nav>
+
+        <section class="block">
+          <h2 class="block-title" data-i18n="tasksTitle">邀请任务</h2>
+          <p class="block-sub" id="tasks-sub"></p>
+          <div class="task-track" id="task-track"></div>
+          <div class="dots" id="task-dots"></div>
+        </section>
+
+        <section class="block">
+          <h2 class="block-title" data-i18n="rewardTitle">可获得的奖励</h2>
+          <article class="reward-card" id="reward-card"></article>
+        </section>
+
+        <button type="button" class="rules-link" data-open="rules" data-i18n="rulesLink">活动规则</button>
+        <div class="screen-pad"></div>
+      </main>
+
+      <div class="dock" id="dock">
+        <button type="button" class="cta" id="cta-dock"></button>
+      </div>
+
+      <div class="home-bar" aria-hidden="true"></div>
+      <div class="toast" id="toast"></div>
+      <div class="overlay" id="overlay"></div>
+
+      <div class="comeback" id="comeback" hidden>
+        <div class="comeback-coins" aria-hidden="true">
+          <i class="coin c1"></i><i class="coin c2"></i><i class="coin c3"></i><i class="coin c4"></i><i class="shard s1"></i><i class="shard s2"></i>
+        </div>
+        <div class="comeback-copy">
+          <p class="comeback-kicker" id="comeback-kicker"></p>
+          <p class="comeback-amount" id="comeback-amount"></p>
+          <p class="comeback-miss" id="comeback-miss"></p>
+          <p class="comeback-gap" id="comeback-gap"></p>
+          <button type="button" class="cta" id="comeback-cta"></button>
+        </div>
+      </div>
+
+      <div class="coach" id="coach" hidden>
+        <button type="button" class="coach-scrim" id="coach-scrim" aria-label="Close"></button>
+        <div class="coach-pop" id="coach-pop">
+          <p class="coach-gap" id="coach-gap"></p>
+          <p class="coach-hint" id="coach-hint"></p>
+        </div>
+        <button type="button" class="cta coach-btn" id="coach-btn"></button>
+        <span class="coach-hand" aria-hidden="true">
+          <img src="img/hand.png?v=19" alt="" width="40" height="46" />
+        </span>
+      </div>
+
+      <div class="poster" id="poster" aria-hidden="true"></div>
+
+      <aside class="sheet" id="sheet-share" role="dialog" aria-modal="true" aria-labelledby="share-title">
+        <div class="sheet-grip"></div>
+        <div class="sheet-head">
+          <h2 id="share-title" data-i18n="shareTitle">分享</h2>
+          <button type="button" class="icon-btn" data-close aria-label="Close">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2 2 10" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="sheet-body" id="share-body"></div>
+      </aside>
+
+      <aside class="sheet tall" id="sheet-my" role="dialog" aria-modal="true" aria-label="My progress">
+        <div class="sheet-head tabs-head">
+          <div class="tabs" id="my-tabs" role="tablist"></div>
+          <button type="button" class="icon-btn" data-close aria-label="Close">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2 2 10" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="sheet-body" id="my-body"></div>
+        <div class="sheet-foot">
+          <button type="button" class="cta" data-open="share" data-i18n="invite">邀请好友</button>
+        </div>
+      </aside>
+
+      <aside class="sheet tall" id="sheet-rules" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+        <div class="sheet-head">
+          <h2 id="rules-title" data-i18n="rulesTitle">规则</h2>
+          <button type="button" class="icon-btn" data-close aria-label="Close">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2 2 10" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="sheet-body rules" id="rules-body"></div>
+      </aside>
+
+      <div class="dialog" id="dialog" role="alertdialog" aria-modal="true">
+        <p class="dialog-title" id="dialog-title"></p>
+        <p class="dialog-text" id="dialog-text"></p>
+        <div class="dialog-actions" id="dialog-actions"></div>
+      </div>
+    </div>
+  </div>
+  <script src="js/config.js?v=20"></script>
+  <script src="js/app.js?v=45"></script>
+</body>
+</html>
