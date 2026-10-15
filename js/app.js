@@ -862,8 +862,8 @@ function beginEntryFlow() {
       dialog(
         `${state.lang === "zh" ? "TradeW 送你" : "TradeW gives you"} ${fmtAmt(gift)} ${cur}`,
         state.lang === "zh"
-          ? `距离提现仅差 ${fmtAmt(gap)} ${cur}`
-          : `Only ${fmtAmt(gap)} ${cur} left to withdraw`,
+          ? `距离提现仅差 ${fmtAmt(gap)} ${cur}<br>邀请好友更快解锁更多奖励。`
+          : `Only ${fmtAmt(gap)} ${cur} left to withdraw.<br>Invite friends to unlock more rewards faster.`,
         [{
           label: L.invite,
           fn: () => {
@@ -872,7 +872,8 @@ function beginEntryFlow() {
             state.revealAfterShare = true;
             open("share");
           },
-        }]
+        }],
+        { htmlText: true }
       );
       return;
     }
