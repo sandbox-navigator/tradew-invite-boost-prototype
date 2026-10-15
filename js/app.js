@@ -784,7 +784,10 @@ function syncComeback() {
       <span>TradeW ${state.lang === "zh" ? "送你" : "gives you"}</span>`;
     $("comeback-amount").innerHTML = `${fmtAmt(gift)}<small>${cur}</small>`;
     $("comeback-miss").innerHTML = L.welcomeGap(fmtAmt(gap));
-    $("comeback-gap").textContent = "";
+    $("comeback-gap").textContent =
+      state.lang === "zh"
+        ? "邀请好友更快解锁更多奖励。"
+        : "Invite friends to unlock more rewards faster.";
     $("comeback-cta").textContent = L.invite;
     state.comebackAction = () => {
       state.welcomeSeen = true;
@@ -860,10 +863,13 @@ function beginEntryFlow() {
       const gap = C.rewardCap - gift;
       state.entryPromptOpen = true;
       dialog(
-        `${state.lang === "zh" ? "TradeW 送你" : "TradeW gives you"} ${fmtAmt(gift)} ${cur}`,
+        `<span class="entry-gift-kicker">${state.lang === "zh" ? "TradeW 送你" : "TradeW gives you"}</span>
+         <strong class="entry-gift-amount">${fmtAmt(gift)} <small>${cur}</small></strong>`,
         state.lang === "zh"
-          ? `距离提现仅差 ${fmtAmt(gap)} ${cur}<br>邀请好友更快解锁更多奖励。`
-          : `Only ${fmtAmt(gap)} ${cur} left to withdraw.<br>Invite friends to unlock more rewards faster.`,
+          ? `<span class="entry-gift-gap">距离提现仅差 <b>${fmtAmt(gap)} ${cur}</b></span>
+             <span class="entry-gift-hint">邀请好友更快解锁更多奖励。</span>`
+          : `<span class="entry-gift-gap">Only <b>${fmtAmt(gap)} ${cur}</b> left to withdraw</span>
+             <span class="entry-gift-hint">Invite friends to unlock more rewards faster.</span>`,
         [{
           label: L.invite,
           fn: () => {
@@ -873,7 +879,7 @@ function beginEntryFlow() {
             open("share");
           },
         }],
-        { htmlText: true }
+        { html: true, htmlText: true, entryGift: true }
       );
       return;
     }
@@ -1697,6 +1703,7 @@ function openMy(tab) {
 
 function dialog(title, text, actions, opts = {}) {
   closeAll();
+  $("dialog").classList.toggle("entry-gift", !!opts.entryGift);
   const titleEl = $("dialog-title");
   if (opts.html) titleEl.innerHTML = title || "";
   else titleEl.textContent = title || "";
