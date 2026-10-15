@@ -22,7 +22,7 @@ const ACTIVE_TIER = bonusFromHistory(DEMO_HISTORY_SCORE);
 const CONFIG = {
   currency: "USDT",
   rewardCap: 50,
-  roundDays: 7,
+  roundDays: 14,
   cycleDays: 30,
   roundsPerCycle: 1,
   maxBoostPerFriend: 3,
