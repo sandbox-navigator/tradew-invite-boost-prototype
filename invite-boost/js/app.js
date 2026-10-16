@@ -46,7 +46,7 @@ const copy = {
   zh: {
     title: "邀请助力",
     tasksTitle: "邀请任务",
-    tasksSub: `邀请好友，每 ${C.cycleDays} 天可解锁 ${C.rewardCap} ${cur}。`,
+    tasksSub: `邀请好友解锁${C.rewardCap}${cur}`,
     rewardTitle: "可获得的奖励",
     rulesLink: "活动规则",
     shareTitle: "分享",
@@ -1354,7 +1354,7 @@ function renderTasks() {
   $("task-track").innerHTML = `
     <article class="task-list-card">
       ${rows}
-      <p class="task-list-note">${state.lang === "zh" ? `将按比例解锁 ${C.rewardCap} ${cur}。` : `Unlock ${C.rewardCap} ${cur} proportionally.`}</p>
+      <p class="task-list-note">${state.lang === "zh" ? `完成任务加速解锁${C.rewardCap}${cur}` : `Complete tasks to unlock ${C.rewardCap} ${cur} faster.`}</p>
     </article>`;
   $("task-dots").innerHTML = "";
 }
