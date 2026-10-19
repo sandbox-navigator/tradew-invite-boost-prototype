@@ -199,7 +199,7 @@ const copy = {
     lockedWithdraw: `集满 ${C.rewardCap} ${cur} 后才可提现`,
     started: (p) => `新一轮已开启，平台赠送 ${p} 进度加成`,
     fullTitle: "恭喜，本轮已集满！",
-    fullText: `您已累积 ${C.rewardCap} ${cur}，完成 KYC 身份认证后即可提现。`,
+    fullText: `您已累积 ${C.rewardCap} ${cur}`,
     goWithdraw: "去提现",
     kycTitle: "需要完成 KYC 认证",
     kycText: "为保障资金安全，提现前需完成 KYC 身份认证。每位用户每月仅可参与一次。",
@@ -410,7 +410,7 @@ const copy = {
     lockedWithdraw: `Fill ${C.rewardCap} ${cur} to withdraw`,
     started: (p) => `New round started with a ${p} platform boost`,
     fullTitle: "Round complete!",
-    fullText: `You've accumulated ${C.rewardCap} ${cur}. Pass KYC to withdraw.`,
+    fullText: `You've accumulated ${C.rewardCap} ${cur}`,
     goWithdraw: "Withdraw",
     kycTitle: "KYC required",
     kycText: "To keep funds safe, you need to pass KYC before withdrawing. Each user can join once a month.",
@@ -858,7 +858,7 @@ function beginEntryFlow() {
   state.entryTimer = setTimeout(() => {
     $("device").classList.remove("entry-locked");
     const s = state.scene;
-    if (s === "idle" || s === "expired") {
+    if (s === "idle") {
       const gift = openingGiftAmount;
       const gap = C.rewardCap - gift;
       state.entryPromptOpen = true;
@@ -880,6 +880,28 @@ function beginEntryFlow() {
           },
         }],
         { html: true, htmlText: true, entryGift: true }
+      );
+      return;
+    }
+    if (s === "expired") {
+      const amount = (progress().total / 100) * C.rewardCap;
+      const gap = C.rewardCap - amount;
+      state.entryPromptOpen = true;
+      dialog(
+        `<span class="entry-gift-kicker">${L.comebackKicker}</span>
+         <strong class="entry-gift-amount">${fmtAmt(amount)} <small>${cur}</small></strong>`,
+        `<span class="entry-expired-miss">${L.comebackMiss}</span>
+         <span class="entry-gift-hint">${L.comebackGap(fmtAmt(gap))}</span>`,
+        [{
+          label: L.again,
+          fn: () => {
+            state.coachSeen = true;
+            startRound({ deferToast: true });
+            state.revealAfterShare = true;
+            open("share");
+          },
+        }],
+        { html: true, htmlText: true, entryGift: true, entryExpired: true }
       );
       return;
     }
@@ -1704,6 +1726,7 @@ function openMy(tab) {
 function dialog(title, text, actions, opts = {}) {
   closeAll();
   $("dialog").classList.toggle("entry-gift", !!opts.entryGift);
+  $("dialog").classList.toggle("entry-expired", !!opts.entryExpired);
   const titleEl = $("dialog-title");
   if (opts.html) titleEl.innerHTML = title || "";
   else titleEl.textContent = title || "";

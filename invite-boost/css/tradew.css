@@ -2303,6 +2303,21 @@ button:disabled {
   font-size: 14px;
 }
 
+.entry-expired .entry-gift-amount {
+  color: #000;
+}
+
+.entry-expired-miss {
+  color: var(--down);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.entry-expired .entry-gift-hint b {
+  color: #000;
+  font-family: var(--num);
+}
+
 .entry-gift .dialog-actions {
   margin-top: 24px;
 }
