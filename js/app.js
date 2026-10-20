@@ -77,6 +77,10 @@ const copy = {
     noteExpired: "可立即开启新一轮再次尝试。",
     noteCooldown: `每 ${C.cycleDays} 天最多完成 ${C.roundsPerCycle} 轮，请等待下一周期开启新任务。`,
     noteBlocked: "受限国家/地区用户，以及高级代理（用户代理、商务代理、IB 明星代理）不可参与本活动。",
+    blockedEntryTitle: "暂时无法参加此活动",
+    blockedEntryText: "由于您所在的国家或地区受到限制，暂时无法参加本活动。您可以前往活动中心查看其他可参与的活动。",
+    viewOtherCampaigns: "查看其他活动",
+    openingCampaignCenter: "正在前往活动中心（演示）",
     kycNeed: "完成 KYC 认证后即可提现",
     kycOk: "已通过 KYC，可立即提现",
     quick: ["我的邀请", "奖励", "规则"],
@@ -160,7 +164,6 @@ const copy = {
     completedAt: "完成时间",
     status: "状态",
     paid: "已发放",
-    pendingKyc: "待完成 KYC",
     pendingClaim: "待领取",
     rewardRound: "参与轮次",
     joined: (d) => `注册于 ${d}`,
@@ -168,8 +171,8 @@ const copy = {
     boosted: "已助力",
     inviteId: "邀请码",
     inviteLink: "邀请链接",
-    posterTitle: `加入我！一起赚取 ${C.rewardCap} ${cur} 奖励！`,
-    posterSub: "立即注册，完成任务，赚取奖励。",
+    posterTitle: "通过我的邀请链接加入 TradeW",
+    posterSub: "注册并完成任务，开启交易。",
     channels: [
       { id: "fb", name: "Facebook", mark: "f" },
       { id: "wa", name: "WhatsApp", mark: "W" },
@@ -256,21 +259,21 @@ const copy = {
   },
   en: {
     title: "Invite Boost",
-    tasksTitle: "Referrer Tasks",
-    tasksSub: `Invite friends to unlock ${C.rewardCap} ${cur} every ${C.cycleDays} days.`,
+    tasksTitle: "Referral Tasks",
+    tasksSub: `Invite friends to unlock ${C.rewardCap} ${cur}.`,
     rewardTitle: "Rewards",
     rulesLink: "Campaign rules",
     shareTitle: "Share",
     invite: "Invite Friends",
     inviteShort: "Invite",
     rulesTitle: "Rules",
-    kickerEarned: "You've accumulated",
-    kickerMax: "Earn per round",
+    kickerEarned: "You've unlocked",
+    kickerMax: "Reward per round",
     kickerFull: "Round complete",
-    kickerPaid: "This cycle's reward is paid",
-    gap: (n) => `<b>${n} ${cur}</b> more to`,
-    withdraw: "withdraw",
-    idleGap: "Start to join this round",
+    kickerPaid: "Reward paid for this cycle",
+    gap: (n) => `Only <b>${n} ${cur}</b> left to`,
+    withdraw: "unlock",
+    idleGap: "Start a round to join.",
     roundLeft: (t) => `Round ends in <b>${t}</b>`,
     roundLen: `Each round lasts ${C.roundDays} days. Unfinished rounds expire.`,
     roundDone: "",
@@ -286,8 +289,12 @@ const copy = {
     badgePaid: (n) => `${n} ${cur} sent to your funding account`,
     badgeBlocked: "You're not eligible for this campaign",
     noteExpired: "You can start a new round right away.",
-    noteCooldown: `You can complete ${C.roundsPerCycle} round every ${C.cycleDays} days. Wait for the next cycle to start again.`,
+    noteCooldown: `You can complete one round every ${C.cycleDays} days. Please wait until the next cycle to start again.`,
     noteBlocked: "Users in restricted regions and senior agents (user agents, business agents, IB star agents) can't join.",
+    blockedEntryTitle: "This campaign isn't available in your region",
+    blockedEntryText: "This campaign is not available in your country or region. Visit the Campaign Center to explore other available campaigns.",
+    viewOtherCampaigns: "View Other Campaigns",
+    openingCampaignCenter: "Opening Campaign Center (demo)",
     kycNeed: "Pass KYC to withdraw",
     kycOk: "KYC passed. Ready to withdraw.",
     quick: ["My Invites", "Rewards", "Rules"],
@@ -299,7 +306,7 @@ const copy = {
     todo: "In progress",
     tasks: {
       deposit: {
-        title: () => "Invite new friends to register and deposit",
+        title: () => "Invite new friends to sign up and make a deposit",
         list: () => [
           `Invite friends to deposit and unlock the ${C.rewardCap} ${cur} reward proportionally under the campaign configuration.`,
         ],
@@ -328,8 +335,8 @@ const copy = {
         unit: "lots",
       },
     },
-    rewardHead: `Win ${C.rewardCap} ${cur}!`,
-    rewardTag: `Every ${C.cycleDays} days`,
+    rewardHead: `Unlock ${C.rewardCap} ${cur}!`,
+    rewardTag: `Once every ${C.cycleDays} days`,
     rewardList: [
       `Complete ${C.roundsPerCycle} round every ${C.cycleDays} days to receive ${C.rewardCap} ${cur}. Each round lasts ${C.roundDays} days.`,
       "Rewards are paid only when the round is full. KYC is required to claim.",
@@ -337,10 +344,10 @@ const copy = {
     ],
     rewardInfoTitle: "About rewards",
     rewardInfo: `<ol class="info-steps">
-      <li><span>1</span><p>Each completed task unlocks progress proportionally.</p></li>
-      <li><span>2</span><p>You can complete up to ${C.roundsPerCycle} round every ${C.cycleDays} days and receive ${C.rewardCap} ${cur}.</p></li>
-      <li><span>3</span><p>Each round lasts ${C.roundDays} days. If the full reward is not unlocked, the unfinished round expires.</p></li>
-      <li><span>4</span><p>After expiry, you can start a new round and try again.</p></li>
+      <li><span>1</span><p>Each completed task unlocks part of your reward.</p></li>
+      <li><span>2</span><p>You can complete one round every ${C.cycleDays} days and receive ${C.rewardCap} ${cur}.</p></li>
+      <li><span>3</span><p>Each round lasts ${C.roundDays} days. If you do not unlock the full reward before the round ends, the round expires and no reward is paid.</p></li>
+      <li><span>4</span><p>After a round expires, you can start a new round and try again.</p></li>
     </ol>`,
     tabs: ["My Invites", "My Rewards"],
     ledgerTotal: "Round total",
@@ -352,7 +359,7 @@ const copy = {
     ledgerBalance: "Accumulated",
     ledgerEffective: "Effective",
     ledgerExpired: "Round expired",
-    syncNotice: "Verification and trading status update within 1 hour.",
+    syncNotice: "Deposit verification and trading status may take up to 1 hour to update.",
     periodSelect: "Select round",
     from: "From",
     arrived: "Recorded",
@@ -360,45 +367,44 @@ const copy = {
     srcTask: { deposit: "Deposit", trade: "Trade", tradeHead: "Group target", bigTrade: "Big trade" },
     bonusHint: "The special boost isn't a received reward. Rewards are paid when the round is full.",
     noRound: "No active round",
-    noInvitees: "No invitees yet",
+    noInvitees: "No invited friends yet",
     noRewards: "No rewards yet",
     deposited: "Deposited",
     notDeposited: "Not deposited",
-    validLots: "Valid trading lots",
+    validLots: "Valid trading volume (lots)",
     rewardNotice: `Rewards go to your funding account once the round reaches ${C.rewardCap} ${cur} and KYC is done.`,
     rewardRec: "Invite Boost reward",
     paidAt: "Paid at",
     completedAt: "Completed at",
     status: "Status",
     paid: "Paid",
-    pendingKyc: "KYC required",
-    pendingClaim: "Ready to claim",
+    pendingClaim: "Ready to Claim",
     rewardRound: "Round",
-    joined: (d) => `Joined ${d}`,
+    joined: (d) => `Registered on ${d}`,
     chips: { deposit: "Deposit", trade: () => "Trade", bigTrade: () => "Trade" },
     boosted: "Boosts",
     inviteId: "Referral code",
     inviteLink: "Referral link",
-    posterTitle: `Join me and earn ${C.rewardCap} ${cur} in rewards!`,
-    posterSub: "Sign up, finish tasks, earn rewards.",
+    posterTitle: "Join TradeW with my referral link!",
+    posterSub: "Sign up, complete the required tasks, and start trading.",
     channels: [
       { id: "fb", name: "Facebook", mark: "f" },
       { id: "wa", name: "WhatsApp", mark: "W" },
       { id: "tg", name: "Telegram", mark: "T" },
       { id: "save", name: "Save image", mark: "↓" },
     ],
-    welcomeKicker: "TradeW gives you",
-    welcomeGap: (n) => `Only <b>${n} ${cur}</b> left to withdraw`,
-    returnKicker: "Left to withdraw",
-    returnHint: "Invite friends to earn more rewards faster",
-    comebackKicker: "Last round has ended",
-    comebackMiss: "Not completed, so no reward",
-    comebackGap: (n) => `The last round had <b>${n} ${cur}</b> left to unlock`,
+    welcomeKicker: "TradeW gives you a head start",
+    welcomeGap: (n) => `Only <b>${n} ${cur}</b> left to unlock`,
+    returnKicker: "Left to unlock",
+    returnHint: "Invite friends to unlock your reward faster.",
+    comebackKicker: "Your last round has ended",
+    comebackMiss: "You did not complete the round, so no reward was issued.",
+    comebackGap: (n) => `You had <b>${n} ${cur}</b> left to unlock.`,
     again: "Start another round",
-    coachGap: (n) => `<b>${n} ${cur}</b> left this round`,
-    coachHint: "Invite friends to move your progress",
-    shortTitle: (n) => `<b>${n} ${cur}</b> more to withdraw`,
-    shortHint: "Invite friends to earn rewards faster",
+    coachGap: (n) => `<b>${n} ${cur}</b> left to unlock this round`,
+    coachHint: "Invite friends to unlock the rest of your reward.",
+    shortTitle: (n) => `<b>${n} ${cur}</b> left to unlock`,
+    shortHint: "Invite friends to unlock your reward faster.",
     decideLater: "Decide later",
     copied: "Copied",
     opened: (n) => `Opened ${n} (demo)`,
@@ -407,21 +413,21 @@ const copy = {
     back: "Back",
     needRound: "Start a round first",
     cantInvite: "Inviting isn't available right now",
-    lockedWithdraw: `Fill ${C.rewardCap} ${cur} to withdraw`,
-    started: (p) => `New round started with a ${p} platform boost`,
+    lockedWithdraw: `Unlock the full ${C.rewardCap} ${cur} before withdrawing.`,
+    started: (p) => `Your new round has started with a ${p} head start.`,
     fullTitle: "Round complete!",
-    fullText: `You've accumulated ${C.rewardCap} ${cur}`,
+    fullText: `You've unlocked ${C.rewardCap} ${cur}.`,
     goWithdraw: "Withdraw",
-    kycTitle: "KYC required",
-    kycText: "To keep funds safe, you need to pass KYC before withdrawing. Each user can join once a month.",
+    kycTitle: "Identity verification required",
+    kycText: "Complete KYC verification before withdrawing your reward.",
     later: "Later",
-    goKyc: "Verify",
-    kycPassed: "KYC passed (demo)",
+    goKyc: "Verify Now",
+    kycPassed: "KYC verification completed",
     confirmTitle: "Confirm withdrawal",
-    confirmText: `${C.rewardCap} ${cur} will go to your funding account.`,
+    confirmText: `${C.rewardCap} ${cur} will be credited to your funding account.`,
     cancel: "Cancel",
     confirm: "Confirm",
-    paidToast: `${C.rewardCap} ${cur} paid`,
+    paidToast: `${C.rewardCap} ${cur} has been credited`,
     ok: "OK",
     v3Clock: (d, h, m) => (d > 0 ? `${d}d ${h}h left` : `${h}h ${m}m left`),
     v3Fast: "Fastest now",
@@ -781,13 +787,13 @@ function syncComeback() {
           <path d="m119 57 22-9 6 24" fill="#fff" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </span>
-      <span>TradeW ${state.lang === "zh" ? "送你" : "gives you"}</span>`;
+      <span>${state.lang === "zh" ? "TradeW 送你" : "TradeW gives you a head start"}</span>`;
     $("comeback-amount").innerHTML = `${fmtAmt(gift)}<small>${cur}</small>`;
     $("comeback-miss").innerHTML = L.welcomeGap(fmtAmt(gap));
     $("comeback-gap").textContent =
       state.lang === "zh"
         ? "邀请好友更快解锁更多奖励。"
-        : "Invite friends to unlock more rewards faster.";
+        : "Invite friends to unlock your reward faster.";
     $("comeback-cta").textContent = L.invite;
     state.comebackAction = () => {
       state.welcomeSeen = true;
@@ -863,13 +869,13 @@ function beginEntryFlow() {
       const gap = C.rewardCap - gift;
       state.entryPromptOpen = true;
       dialog(
-        `<span class="entry-gift-kicker">${state.lang === "zh" ? "TradeW 送你" : "TradeW gives you"}</span>
+        `<span class="entry-gift-kicker">${state.lang === "zh" ? "TradeW 送你" : "TradeW gives you a head start"}</span>
          <strong class="entry-gift-amount">${fmtAmt(gift)} <small>${cur}</small></strong>`,
         state.lang === "zh"
           ? `<span class="entry-gift-gap">距离提现仅差 <b>${fmtAmt(gap)} ${cur}</b></span>
              <span class="entry-gift-hint">邀请好友更快解锁更多奖励。</span>`
           : `<span class="entry-gift-gap">Only <b>${fmtAmt(gap)} ${cur}</b> left to withdraw</span>
-             <span class="entry-gift-hint">Invite friends to unlock more rewards faster.</span>`,
+             <span class="entry-gift-hint">Invite friends to unlock your reward faster.</span>`,
         [{
           label: L.invite,
           fn: () => {
@@ -914,6 +920,15 @@ function beginEntryFlow() {
           open("share");
         },
       }], { html: true });
+      return;
+    }
+    if (s === "blocked") {
+      state.entryPromptOpen = true;
+      dialog(L.blockedEntryTitle, L.blockedEntryText, [{
+        label: L.viewOtherCampaigns,
+        keepOpen: true,
+        fn: () => toast(L.openingCampaignCenter),
+      }], { entryGift: true });
       return;
     }
     revealAmount();
@@ -1376,7 +1391,7 @@ function renderTasks() {
   $("task-track").innerHTML = `
     <article class="task-list-card">
       ${rows}
-      <p class="task-list-note">${state.lang === "zh" ? `完成任务加速解锁${C.rewardCap}${cur}` : `Complete tasks to unlock ${C.rewardCap} ${cur} faster.`}</p>
+      <p class="task-list-note">${state.lang === "zh" ? `完成任务加速解锁${C.rewardCap}${cur}` : `Complete tasks to unlock your ${C.rewardCap} ${cur} reward faster.`}</p>
     </article>`;
   $("task-dots").innerHTML = "";
 }
@@ -1531,7 +1546,7 @@ function renderMy() {
     return;
   }
   const rewardTime = state.paidAt || state.completedAt || nowMs();
-  const rewardStatus = state.paidAt ? L.paid : state.kyc ? L.pendingClaim : L.pendingKyc;
+  const rewardStatus = state.paidAt ? L.paid : L.pendingClaim;
   const timeLabel = state.paidAt ? L.paidAt : L.completedAt;
   body.innerHTML = `${notice}
     <div class="rec">
@@ -1739,11 +1754,16 @@ function dialog(title, text, actions, opts = {}) {
     .join("");
   wrap.querySelectorAll("[data-act]").forEach((b) =>
     b.addEventListener("click", () => {
+      const action = actions[Number(b.dataset.act)];
+      if (action.keepOpen) {
+        if (action.fn) action.fn();
+        return;
+      }
       state.entryPromptOpen = false;
       state.suppressDeferredClose = true;
       closeAll();
       state.suppressDeferredClose = false;
-      const fn = actions[Number(b.dataset.act)].fn;
+      const fn = action.fn;
       if (fn) fn();
     })
   );
