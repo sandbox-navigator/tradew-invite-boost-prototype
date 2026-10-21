@@ -538,6 +538,20 @@ function recentSpend() {
   return `${item.name} -${coins(item.coins)}`;
 }
 
+function changeRow(label, value, action) {
+  const linked = value !== "暂无";
+  if (!linked) return `<div class="change-row"><span>${label}</span><b class="is-muted">${esc(value)}</b></div>`;
+  return `<button type="button" class="change-row is-link" data-action="${action}"><span>${label}</span><b>${esc(value)}</b><i class="chev" aria-hidden="true"></i></button>`;
+}
+
+function earnLedgerRows() {
+  const time = state.claims[0] ? state.claims[0].time : "";
+  const pending = state.claims.map((row) => ({ ...row, pending: true })).concat(
+    pendingBonuses().map((item) => ({ source: "额外", amount: item.reward, time, pending: true })),
+  );
+  return pending.concat(state.ledger.filter((row) => row.amount > 0));
+}
+
 function shopNav() {
   const right = `<button type="button" class="nav-text" data-action="ledger">明细</button>
     <button type="button" class="nav-text" data-action="rules">规则</button>`;
@@ -833,8 +847,8 @@ function viewShop() {
             <p class="nearest">美分账户和 Pro 账户的交易不发放金币。换到标准账户后，余额会出现在这里。</p>`}
       </div>
       <div class="changes">
-        <button type="button" data-action="ledger"><span>最近获得</span><b>${esc(recentEarnText())}</b></button>
-        <button type="button" data-action="ledger-redeem"><span>最近兑换</span><b>${esc(recentSpend())}</b></button>
+        ${changeRow("最近获得", recentEarnText(), "ledger")}
+        ${changeRow("最近兑换", recentSpend(), "ledger-redeem")}
       </div>
       ${tickerBlock()}
       <div class="head-row"><h2>可兑换</h2><button type="button" data-action="shelf">查看全部</button></div>
@@ -968,9 +982,16 @@ function viewResult() {
 function viewLedger() {
   const earn = state.ledgerTab === "earn";
   const rows = earn
-    ? state.ledger.map((item) => `<div class="line"><span><b>${esc(item.source)}</b><small>${esc(item.time)}</small></span><strong class="up">+${coins(item.amount)}</strong></div>`).join("")
+    ? earnLedgerRows().map((item) => `<div class="line"><span><b>${esc(item.source)}</b><small>${item.pending ? "待领取 · " : ""}${esc(item.time)}</small></span><strong class="up">+${coins(item.amount)}</strong></div>`).join("")
     : state.redeems.map((item) => `<div class="line"><span><b>${esc(item.name)}</b><small>${esc(item.time)} · ${esc(item.status)}</small></span><strong class="down-num">-${coins(item.coins)}</strong></div>`).join("");
-  const empty = rows ? "" : '<p class="empty">暂无记录</p>';
+  let empty = "";
+  if (!rows) {
+    empty = earn && state.eligible
+      ? `<div class="empty-guide"><p>完成一笔交易后，金币会出现在这里。</p><button type="button" class="cta" data-action="trade">去交易</button></div>`
+      : earn
+        ? `<div class="empty-guide"><p>这个账户的交易不计金币。</p></div>`
+        : `<div class="empty-guide"><p>兑换奖励后，记录会出现在这里。</p></div>`;
+  }
   return `${nav("金币明细")}
     <main class="screen" style="padding-top:8px">
       <div class="tabs" role="tablist">
