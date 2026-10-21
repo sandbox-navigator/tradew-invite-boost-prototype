@@ -729,7 +729,7 @@ function goalOptions() {
 }
 
 function chosenGoal() {
-  if (state.goalPhase === "next") return null;
+  if (state.goalPhase === "next" || state.goalPhase === "later" || state.goalPhase === "ask") return null;
   const picked = state.goalId ? findSku(state.goalId) : null;
   if (picked && picked.country === state.country && picked.kind !== "coupon") return picked;
   return rankOne(state.country);
@@ -772,10 +772,13 @@ function goalCardClass() {
   return goalMotion === "swap" ? "goal-card is-goal-swap" : "goal-card";
 }
 
+function goalEmpty(title, note) {
+  return `<button type="button" class="goal-empty" data-action="goal"><b>${title}</b><small>${note}</small></button>`;
+}
+
 function nextPrize() {
-  if (state.goalPhase === "next") {
-    return `<button type="button" class="goal-empty" data-action="goal"><b>选择下一个奖励</b><small>继续交易攒金币，目标可以随时更换。</small></button>`;
-  }
+  if (state.goalPhase === "next") return goalEmpty("选择下一个奖励", "继续交易攒金币，目标可以随时更换。");
+  if (state.goalPhase === "ask" || state.goalPhase === "later") return goalEmpty("选择一个兑换目标", "每次交易都会获得金币，目标可以随时更换。");
   const list = countryProducts();
   const primary = chosenGoal();
   const available = list.find((item) => item.id !== primary?.id && state.stocks[item.id] > 0)
@@ -1046,7 +1049,7 @@ function viewDepositOk() {
 
 function goalDialog() {
   const nextRound = state.goalPhase === "next";
-  const showAll = nextRound && state.goalPicker === "all";
+  const showAll = state.goalPicker === "all" && state.goalPhase !== "ask" && state.goalPhase !== "later";
   const options = showAll ? allGoalOptions() : goalOptions();
   if (!options.length) return "";
   const rows = options.map((sku) => `<button type="button" class="goal-option${state.goalId === sku.id ? " is-on" : ""}" data-action="goal-pick" data-id="${sku.id}">
@@ -1059,7 +1062,7 @@ function goalDialog() {
     : nextRound
       ? "继续交易攒金币，目标可以随时更换。"
       : "每笔交易都会获得金币，攒够即可兑换。奖励可以更换。";
-  const more = state.goalPhase !== "ask" && !showAll
+  const more = (state.goalPhase === "next" || state.goalPhase === "active") && !showAll
     ? '<button type="button" class="goal-more" data-action="goal-all">查看全部奖励</button>'
     : "";
   const back = showAll && goalOptions().length
@@ -1319,16 +1322,13 @@ function onAction(action, el) {
     state.dialog = null;
     render();
   } else if (action === "goal-dismiss") {
-    if (state.goalPhase === "next") {
-      state.dialog = null;
-      state.screen = "shop";
-      render();
-      return;
+    if (state.goalPhase === "ask") {
+      state.goalPhase = "later";
+      state.goalAsked = true;
+      state.goalId = null;
     }
-    state.goalAsked = true;
-    state.goalPhase = "active";
-    if (!state.goalId) state.goalId = rankOne(state.country)?.id || null;
     state.dialog = null;
+    state.screen = "shop";
     render();
   }
   else if (action === "bonus-go") {
