@@ -542,6 +542,50 @@ button:disabled {
   margin-top: 14px;
 }
 
+.goal-empty {
+  width: 100%;
+  margin-top: 14px;
+  padding: 16px 14px;
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px #e4d3b0;
+  text-align: left;
+}
+
+.goal-empty b {
+  display: block;
+  color: var(--brand-deep);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.goal-empty small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.goal-card.is-goal-swap {
+  overflow: hidden;
+}
+
+.goal-card.is-goal-swap > * {
+  animation: goal-swap 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes goal-swap {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .next-prize {
   width: 100%;
   position: relative;
@@ -1132,13 +1176,32 @@ button:disabled {
 }
 
 .sku-copy em {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 3px;
   color: var(--metal);
   font-style: normal;
   font-size: 13px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+}
+
+.sku-copy em .coin-disc {
+  width: 14px;
+  height: 14px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .sku-copy small,
@@ -1316,6 +1379,20 @@ button:disabled {
 .goal-list {
   display: grid;
   gap: 8px;
+}
+
+.goal-list.is-all {
+  max-height: 280px;
+  overflow: auto;
+}
+
+.goal-more {
+  width: 100%;
+  margin-top: 10px;
+  color: var(--brand-deep);
+  font-size: 13px;
+  font-weight: 650;
+  text-align: center;
 }
 
 .goal-option {
@@ -1536,5 +1613,8 @@ button:disabled {
 @media (prefers-reduced-motion: reduce) {
   #ticker-text {
     transition: none;
+  }
+  .goal-card.is-goal-swap > * {
+    animation: none;
   }
 }

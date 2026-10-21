@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <title>金币 · TradeW</title>
-  <link rel="stylesheet" href="css/styles.css?v=20" />
+  <link rel="stylesheet" href="css/styles.css?v=23" />
 </head>
 <body>
   <div class="app-page">
@@ -23,10 +23,12 @@
         <button type="button" data-sim="ready">可兑换 · 800</button>
         <button type="button" data-sim="rich">金币很多 · 10,000</button>
         <button type="button" data-sim="soldout">主推兑完</button>
+        <button type="button" data-sim="achieved">目标已达成</button>
+        <button type="button" data-sim="nextgoal">待选下一目标</button>
         <button type="button" data-sim="blocked">不计金币</button>
         <button type="button" data-sim="reset">重置</button>
       </div>
-      <p class="proto-hint">未交易会先选主推奖励，选好后一直有效，卡片上可以更换。今日首笔的右下角是全部待领金币。</p>
+      <p class="proto-hint">目标已达成后可选下一个奖励，暂时不选则首页留空。兑换其他商品不会清掉当前目标。</p>
     </aside>
 
     <div class="device" id="device">
@@ -43,6 +45,6 @@
       <div id="toast" class="toast" hidden role="status"></div>
     </div>
   </div>
-  <script src="js/app.js?v=22"></script>
+  <script src="js/app.js?v=30"></script>
 </body>
 </html>
