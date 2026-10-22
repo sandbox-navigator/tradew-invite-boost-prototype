@@ -45,8 +45,8 @@ function pctOf(value, target) {
 const copy = {
   zh: {
     title: "邀请助力",
-    tasksTitle: "邀请任务",
-    tasksSub: `邀请好友解锁${C.rewardCap}${cur}`,
+    tasksTitle: "奖励解锁方式",
+    tasksSub: `完成以下任一任务，即可解锁本轮全部${C.rewardCap} ${cur}奖励`,
     rewardTitle: "可获得的奖励",
     rulesLink: "活动规则",
     shareTitle: "分享",
@@ -259,8 +259,8 @@ const copy = {
   },
   en: {
     title: "Invite Boost",
-    tasksTitle: "Referral Tasks",
-    tasksSub: `Invite friends to unlock ${C.rewardCap} ${cur}.`,
+    tasksTitle: "Ways to Unlock Your Reward",
+    tasksSub: `Complete either task to unlock the full ${C.rewardCap} ${cur} reward.`,
     rewardTitle: "Rewards",
     rulesLink: "Campaign rules",
     shareTitle: "Share",
@@ -1379,8 +1379,8 @@ function renderTasks() {
       const taskNo = task.id === "deposit" ? 1 : 2;
       const label =
         shownTasks.length === 1
-          ? state.lang === "zh" ? "任务" : "Task"
-          : state.lang === "zh" ? `任务 ${taskNo}` : `Task ${taskNo}`;
+          ? state.lang === "zh" ? "方式" : "Option"
+          : state.lang === "zh" ? `方式 ${taskNo}` : `Option ${taskNo}`;
       return `
         <div class="task-list-row">
           <span class="task-list-index">${label}</span>
@@ -1391,7 +1391,7 @@ function renderTasks() {
   $("task-track").innerHTML = `
     <article class="task-list-card">
       ${rows}
-      <p class="task-list-note">${state.lang === "zh" ? `完成任务加速解锁${C.rewardCap}${cur}` : `Complete tasks to unlock your ${C.rewardCap} ${cur} reward faster.`}</p>
+      <p class="task-list-note">${state.lang === "zh" ? `邀请更多好友加速解锁${C.rewardCap}${cur}` : `Invite more friends to unlock ${C.rewardCap} ${cur} faster.`}</p>
     </article>`;
   $("task-dots").innerHTML = "";
 }
