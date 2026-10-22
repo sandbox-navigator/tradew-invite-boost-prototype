@@ -45,8 +45,8 @@ function pctOf(value, target) {
 const copy = {
   zh: {
     title: "邀请助力",
-    tasksTitle: "邀请任务",
-    tasksSub: `邀请好友解锁${C.rewardCap}${cur}`,
+    tasksTitle: "奖励解锁方式",
+    tasksSub: `完成以下任一任务，即可解锁本轮全部${C.rewardCap} ${cur}奖励`,
     rewardTitle: "可获得的奖励",
     rulesLink: "活动规则",
     shareTitle: "分享",
@@ -252,15 +252,15 @@ const copy = {
         <p class="num"><b>5.</b> 美分、Pro 账户交易量不计入有效交易量统计，好友持仓时间不得低于 1 分钟。</p>
         <p class="num"><b>6.</b> 新用户仅能选择一种邀请方式完成注册，通过本邀请链接注册的用户不可重复申请其他邀请奖励。不可与其他邀友活动奖励同享（交易每手返佣 2/3 美金可同享）。</p>
         <p class="num"><b>7.</b> 受限国家/地区用户无法作为邀请人或受邀好友参与本活动。</p>
-        <p class="num"><b>8.</b> 平台保留调整活动机制的权利，包括奖励内容、任务要求及活动时间。建议您定期查阅活动页面以获取最新信息。解锁奖励后需完成 KYC 认证，每位用户每月仅可参与一次。</p>
+        <p class="num"><b>8.</b> 平台保留调整活动机制的权利，包括奖励内容、任务要求及活动时间。建议您定期查阅活动页面以获取最新信息。每位用户每月仅可参与一次。</p>
         <p class="num"><b>9.</b> 同一设备或同一用户 ID 不可重复参与。若参与者涉嫌通过同一 IP、同一设备注册多个账户，或存在其他欺诈、恶意行为，平台保留取消其参与资格并撤销奖励的权利。</p>
         <p class="num"><b>10.</b> 高级代理不参与本活动（用户代理及商务代理和 IB 明星代理均不可参与）。</p>
         <p class="foot">最终解释权归本平台所有。</p>`,
   },
   en: {
     title: "Invite Boost",
-    tasksTitle: "Referral Tasks",
-    tasksSub: `Invite friends to unlock ${C.rewardCap} ${cur}.`,
+    tasksTitle: "Ways to Unlock Your Reward",
+    tasksSub: `Complete either task to unlock the full ${C.rewardCap} ${cur} reward.`,
     rewardTitle: "Rewards",
     rulesLink: "Campaign rules",
     shareTitle: "Share",
@@ -466,7 +466,7 @@ const copy = {
         <p class="num"><b>5.</b> Cent and Pro account volume isn't counted. Friends must hold a position for at least 1 minute.</p>
         <p class="num"><b>6.</b> New users can sign up with only one referral method. Users who sign up with this link can't claim other referral rewards. This reward can't be combined with other invite rewards. The $2 or $3 per-lot rebate can still apply.</p>
         <p class="num"><b>7.</b> Users in restricted countries or regions can't join as referrers or invitees.</p>
-        <p class="num"><b>8.</b> The platform may adjust rewards, task requirements and campaign dates. Check this page regularly. KYC is required after unlocking rewards, and each user can join once a month.</p>
+        <p class="num"><b>8.</b> The platform may adjust rewards, task requirements and campaign dates. Check this page regularly. Each user can join once a month.</p>
         <p class="num"><b>9.</b> The same device or user ID may not participate repeatedly. The platform may disqualify users and revoke rewards for multiple accounts from one IP or device, fraud, or other malicious conduct.</p>
         <p class="num"><b>10.</b> Senior agents can't join (user agents, business agents and IB star agents).</p>
         <p class="foot">The platform reserves the right of final interpretation.</p>`,
@@ -1002,20 +1002,6 @@ function syncCoach() {
 
 function withdrawFlow() {
   const L = t();
-  if (!state.kyc) {
-    dialog(L.kycTitle, L.kycText, [
-      { label: L.later, ghost: true },
-      {
-        label: L.goKyc,
-        fn: () => {
-          state.kyc = true;
-          render();
-          toast(L.kycPassed);
-        },
-      },
-    ]);
-    return;
-  }
   dialog(L.confirmTitle, L.confirmText, [
     { label: L.cancel, ghost: true },
     {
@@ -1379,8 +1365,8 @@ function renderTasks() {
       const taskNo = task.id === "deposit" ? 1 : 2;
       const label =
         shownTasks.length === 1
-          ? state.lang === "zh" ? "任务" : "Task"
-          : state.lang === "zh" ? `任务 ${taskNo}` : `Task ${taskNo}`;
+          ? state.lang === "zh" ? "方式" : "Option"
+          : state.lang === "zh" ? `方式 ${taskNo}` : `Option ${taskNo}`;
       return `
         <div class="task-list-row">
           <span class="task-list-index">${label}</span>
@@ -1391,7 +1377,7 @@ function renderTasks() {
   $("task-track").innerHTML = `
     <article class="task-list-card">
       ${rows}
-      <p class="task-list-note">${state.lang === "zh" ? `完成任务加速解锁${C.rewardCap}${cur}` : `Complete tasks to unlock your ${C.rewardCap} ${cur} reward faster.`}</p>
+      <p class="task-list-note">${state.lang === "zh" ? `邀请更多好友加速解锁${C.rewardCap}${cur}` : `Invite more friends to unlock ${C.rewardCap} ${cur} faster.`}</p>
     </article>`;
   $("task-dots").innerHTML = "";
 }
